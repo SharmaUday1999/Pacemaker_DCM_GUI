@@ -90,6 +90,7 @@ class registerPage(tk.Frame):
             usernameLabelEntry.get() == "" or
             passwordLabelEntry.get() == "" ):
 
+            regLabel = tk.Label(self, text = "")
             emptyLabel = tk.Label(self, text = "All inputs must be filled")
             emptyLabel.grid(row = 2, column = 4)
         else:
@@ -100,27 +101,50 @@ class registerPage(tk.Frame):
             current_row = ws.max_row
             current_column = ws.max_column
 
+            duplicateUsernameToggle = 0
+            print(duplicateUsernameToggle)
+
+            for i in range(1,current_row+1):
+                if ws.cell(row = i, column = 4).value == usernameLabelEntry.get():
+                    duplicateUsernameToggle = 1
+                    break
+
             # get method returns current text
             # as string which we write into
             # excel spreadsheet at particular location
-            ws.cell(row=current_row + 1, column=1).value = firstnameLabelEntry.get()
-            ws.cell(row=current_row + 1, column=2).value = lastnameLabelEntry.get()
-            ws.cell(row=current_row + 1, column=3).value = emailLabelEntry.get()
-            ws.cell(row=current_row + 1, column=4).value = usernameLabelEntry.get()
-            ws.cell(row=current_row + 1, column=5).value = passwordLabelEntry.get()
+            if duplicateUsernameToggle == 0:
 
-            # save the file
-            wb.save(filename)
+                ws.cell(row=current_row + 1, column=1).value = firstnameLabelEntry.get()
+                ws.cell(row=current_row + 1, column=2).value = lastnameLabelEntry.get()
+                ws.cell(row=current_row + 1, column=3).value = emailLabelEntry.get()
+                ws.cell(row=current_row + 1, column=4).value = usernameLabelEntry.get()
+                ws.cell(row=current_row + 1, column=5).value = passwordLabelEntry.get()
 
-            # clear the content of text entry box
-            firstnameLabelEntry.delete(0, 'end')
-            lastnameLabelEntry.delete(0, 'end')
-            emailLabelEntry.delete(0, 'end')
-            usernameLabelEntry.delete(0, 'end')
-            passwordLabelEntry.delete(0, 'end')
+                # save the file
+                wb.save(filename)
 
-            regLabel = tk.Label(self, text = "You have been registered!")
-            regLabel.grid(row = 2, column = 4)
+                # clear the content of text entry box
+                firstnameLabelEntry.delete(0, 'end')
+                lastnameLabelEntry.delete(0, 'end')
+                emailLabelEntry.delete(0, 'end')
+                usernameLabelEntry.delete(0, 'end')
+                passwordLabelEntry.delete(0, 'end')
+
+                regLabel = tk.Label(self, text = "")
+                regLabel = tk.Label(self, text = "You have been registered!")
+                regLabel.grid(row = 2, column = 4)
+            else:
+                regLabel = tk.Label(self, text = "")
+                regLabel = tk.Label(self, text = "Username not available!")
+                regLabel.grid(row = 2, column = 4)
+
+                # clear the content of text entry box
+                firstnameLabelEntry.delete(0, 'end')
+                lastnameLabelEntry.delete(0, 'end')
+                emailLabelEntry.delete(0, 'end')
+                usernameLabelEntry.delete(0, 'end')
+                passwordLabelEntry.delete(0, 'end')
+
 
 
     def __init__(self, parent, controller):
