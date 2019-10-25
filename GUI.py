@@ -45,7 +45,7 @@ class pacemaker(tk.Tk):
 
 
         self.frames = {}
-        for F in (welcomePage, registerPage, loginPage):
+        for F in (welcomePage, registerPage, loginPage, mainPortal):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -183,9 +183,20 @@ class registerPage(tk.Frame):
         buttonReturn.grid(row = 6, column = 1, padx = 5, pady = 5)
 
 
-
-
 class loginPage(tk.Frame):
+
+    def login(self):
+        rowMatchPassword = 1
+        for i in range(1,ws.max_row+1):
+            if ws.cell(row = i, column = 4).value == usernameLabelEntryLogin.get():
+                rowMatchPassword = i
+                break
+
+        if ws.cell(row = rowMatchPassword, column = 5).value == passwordLabelEntryLogin.get():
+            self.controller.show_frame('mainPortal')
+            usernameLabelEntryLogin.delete(0,'end')
+            passwordLabelEntryLogin.delete(0,'end')
+        #implement incorrect login text
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -196,16 +207,32 @@ class loginPage(tk.Frame):
         usernameLabel = tk.Label(self ,text = "Username").grid(row = 1,column = 0, padx = 5, pady = 5)
         passwordLabel = tk.Label(self ,text = "Password").grid(row = 2,column = 0, padx = 5, pady = 5)
 
+        global usernameLabelEntryLogin
+        global passwordLabelEntryLogin
 
-        usernameLabelEntry = tk.Entry(self).grid(row = 1,column = 1, padx = 5, pady = 5)
-        passwordLabelEntry = tk.Entry(self).grid(row = 2,column = 1, padx = 5, pady = 5)
+        usernameLabelEntryLogin = tk.Entry(self)
+        usernameLabelEntryLogin.grid(row = 1,column = 1, padx = 5, pady = 5)
+        passwordLabelEntryLogin = tk.Entry(self)
+        passwordLabelEntryLogin.grid(row = 2,column = 1, padx = 5, pady = 5)
 
-        buttonLogin = tk.Button(self, text="Login")
+        buttonLogin = tk.Button(self, text="Login", command = self.login)
         buttonLogin.grid(row = 6, column = 0, padx = 5, pady = 5)
 
         buttonReturn = tk.Button(self, text="Return to main menu",
                            command=lambda: controller.show_frame("welcomePage"))
         buttonReturn.grid(row = 6, column = 1, padx = 5, pady = 5)
+
+class mainPortal(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="WELCOME TO THE PACEMAKER PORTAL", font=controller.title_font).grid(row = 0, column = 0)
+
+
+        logoutButton = tk.Button(self, text="Logout",
+                           command=lambda: controller.show_frame("welcomePage"))
+        logoutButton.grid(row = 12, column = 0, padx = 5, pady = 5)
 
 
 if __name__ == "__main__":
